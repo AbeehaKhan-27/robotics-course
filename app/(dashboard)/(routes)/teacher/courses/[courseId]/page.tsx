@@ -1,12 +1,13 @@
 import { IconBadge } from "@/components/icon-badge";
 import { db } from "@/lib/db";
 import { auth } from "@clerk/nextjs/server";
-import { LayoutDashboard } from "lucide-react";
+import { File, LayoutDashboard, ListChecks } from "lucide-react";
 import { redirect } from "next/navigation";
 import { TitleForm } from "./_components/title-form";
 import { ImageForm } from "./_components/image-form";
 import { DescriptionForm } from "./_components/description-form";
 import { CategoryForm } from "./_components/category-form";
+import { AttachmentForm } from "./_components/attachment-form";
 
 const CourseIdPage = async ({
   params,
@@ -22,7 +23,14 @@ const CourseIdPage = async ({
     const course = await db.course.findUnique({
         where: {
             id: (await params).courseId
-        }
+        },
+        include: {
+            attachments: {
+                orderBy:{
+                    createdAt: "desc",
+                },
+            },
+        },
     });
 
     const categories = await db.category.findMany({
@@ -88,6 +96,22 @@ const CourseIdPage = async ({
                     }))}
                 />
             </div>
+            <div className="space-y-6">
+                <div>
+                    <div className="flex items-center gap-x-2">
+                        <IconBadge icon={ListChecks} />
+                        <h2 className="text-xl">Course modules</h2>
+                    </div>
+                <div>TODO: Modules</div>
+                    </div>
+                        <div>
+                            <div className="flex items-center gap-x-2">
+                                <IconBadge icon={File} />
+                                <h2 className="text-xl">Resources &amp; Attachments</h2>
+                            </div>
+                            <AttachmentForm initialData={course} courseId={course.id} />
+                        </div>
+                </div>
         </div>
     </div>
   );
