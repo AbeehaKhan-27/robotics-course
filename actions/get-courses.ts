@@ -1,0 +1,58 @@
+import type { Category, Course } from "@/lib/generated/prisma/client";
+
+import { db } from "@/lib/db";
+import { getProgress } from "@/actions/get-progress";
+
+export type CourseWithProgressWithCategory = Course & {
+  category: Category | null;
+  chapters: { id: string }[];
+  progress: number | null;
+};
+
+type GetCourses = {
+  userId: string;
+  title?: string;
+  categoryId?: string;
+};
+
+export const getCourses = async ({
+  userId,
+  title,
+  categoryId,
+}: GetCourses): Promise<CourseWithProgressWithCategory[]> => {
+  try {
+    const courses = await db.course.findMany({
+      where: {
+        isPublished: true,
+        title: title ? { contains: title, mode: "insensitive" } : undefined,
+        categoryId,
+      },
+      include: {
+        category: true,
+        chapters: {
+          where: { isPublished: true },
+          select: { id: true },
+        },
+        enrollments: { where: { userId } },
+      },
+      orderBy: { createdAt: "desc" },
+    });
+
+    const coursesWithProgress = await Promise.all(
+      courses.map(async (course) => {
+        // Not enrolled yet: no progress bar on the card
+        if (course.enrollments.length === 0) {
+          return { ...course, progress: null };
+        }
+
+        const progressPercentage = await getProgress(userId, course.id);
+        return { ...course, progress: progressPercentage };
+      })
+    );
+
+    return coursesWithProgress;
+  } catch (error) {
+    console.log("[GET_COURSES]", error);
+    return [];
+  }
+};
