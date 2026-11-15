@@ -9,6 +9,7 @@ import { VideoEmbed } from "@/components/video-embed";
 import { Separator } from "@/components/ui/separator";
 import { CourseEnrollButton } from "./_components/course-enroll-button";
 import { CourseProgressButton } from "./_components/course-progress-button";
+import { NotesForm } from "./_components/notes-form";
 
 const ChapterIdPage = async ({
   params,
@@ -22,7 +23,7 @@ const ChapterIdPage = async ({
     return redirect("/");
   }
 
-  const { chapter, course, attachments, nextChapter, userProgress, enrollment } =
+  const { chapter, course, attachments, nextChapter, userProgress, enrollment, note } =
     await getChapter({ userId, courseId, chapterId });
 
   if (!chapter || !course) {
@@ -78,6 +79,14 @@ const ChapterIdPage = async ({
               </div>
             </>
           )}
+          <Separator />
+          <div className="p-4">
+            <NotesForm
+              courseId={courseId}
+              chapterId={chapterId}
+              initialNote={note?.content ?? ""}
+            />
+          </div>
         </div>
       </div>
     </div>

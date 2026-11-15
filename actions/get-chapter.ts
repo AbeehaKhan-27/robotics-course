@@ -45,6 +45,10 @@ export const getChapter = async ({
       where: { userId_courseId: { userId, courseId } },
     });
 
+    const note = await db.note.findUnique({
+      where: { userId_chapterId: { userId, chapterId } },
+    });
+
     return {
       chapter,
       course,
@@ -52,6 +56,7 @@ export const getChapter = async ({
       nextChapter,
       userProgress,
       enrollment,
+      note,
     };
   } catch (error) {
     console.log("[GET_CHAPTER]", error);
@@ -62,6 +67,7 @@ export const getChapter = async ({
       nextChapter: null,
       userProgress: null,
       enrollment: null,
+      note: null,
     };
   }
 };

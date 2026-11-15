@@ -1,16 +1,6 @@
 "use client";
 
-import {
-  Camera,
-  Code,
-  Cpu,
-  Film,
-  Folder,
-  Lightbulb,
-  type LucideIcon,
-  Music,
-  Wrench,
-} from "lucide-react";
+import { Cpu, Folder, type LucideIcon } from "lucide-react";
 import type { Category } from "@/lib/generated/prisma/client";
 
 import { CategoryItem } from "./category-item";
@@ -19,13 +9,8 @@ interface CategoriesProps {
   items: Category[];
 }
 
-// Keys must match the category names in your database
 const iconMap: Record<string, LucideIcon> = {
-  "Computer Science": Code,
-  "Engineering": Wrench,
-  "Music": Music,
-  "Photography": Camera,
-  "Filming": Film,
+  Robotics: Cpu,
 };
 
 export const Categories = ({ items }: CategoriesProps) => {
