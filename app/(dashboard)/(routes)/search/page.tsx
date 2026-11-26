@@ -6,6 +6,7 @@ import { getCourses } from "@/actions/get-courses";
 import { SearchInput } from "@/components/search-input";
 import { CoursesList } from "@/components/courses-list";
 import { Categories } from "./_components/categories";
+import { Suspense } from "react";
 
 interface SearchPageProps {
   searchParams: Promise<{
@@ -32,10 +33,14 @@ const SearchPage = async ({ searchParams }: SearchPageProps) => {
   return (
     <>
       <div className="px-6 pt-6 md:hidden md:mb-0 block">
-        <SearchInput />
+        <Suspense fallback={null}>
+          <SearchInput />
+        </Suspense>
       </div>
       <div className="p-6 space-y-4">
-        <Categories items={categories} />
+        <Suspense fallback={null}>
+          <Categories items={categories} />
+        </Suspense>
         <CoursesList items={courses} />
       </div>
     </>

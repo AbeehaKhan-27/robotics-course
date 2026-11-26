@@ -7,6 +7,7 @@ import { LogOut } from "lucide-react";
 import { SearchInput } from "./search-input";
 import { useAuth } from "@clerk/nextjs";
 import { isTeacher } from "@/lib/teacher";
+import { Suspense } from "react";
 import Link from "next/link";
 
 export const NavbarRoutes = () => {
@@ -21,7 +22,9 @@ export const NavbarRoutes = () => {
         <>
         {isSearchPage && (
             <div className="hidden md:block">
-                <SearchInput />
+                <Suspense fallback={null}>
+                    <SearchInput />
+                </Suspense>
             </div>
         )}
         
@@ -40,10 +43,7 @@ export const NavbarRoutes = () => {
                     </Button>
                 </Link>
             ) : null}
-            <UserButton 
-                afterSignOutUrl="/"
-            />
-            
+            <UserButton />
 
         </div>
         </>
